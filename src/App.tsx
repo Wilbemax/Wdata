@@ -67,7 +67,7 @@ const App: React.FC = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          WBM ©{new Date().getFullYear()} 
         </Footer>
       </Layout>
     </Layout>
