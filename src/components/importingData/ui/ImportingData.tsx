@@ -54,10 +54,11 @@ const ImportingData = ({ onImport }: Props) => {
             }
         }
     };
-
+    //посмотреть возможность изменить вид листа 
     const props: UploadProps = {
         name: 'file',
         multiple: false,
+        listType: 'picture',
         beforeUpload(file) {
             const isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
             const isJson = file.type === 'application/json';
@@ -73,7 +74,8 @@ const ImportingData = ({ onImport }: Props) => {
     };
 
     return (
-        <Dragger {...props} style={{ width: '100%' }}>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360}}>
+            <Dragger {...props} style={{ maxWidth: 650 }}>
             <p className="ant-upload-drag-icon">
                 <Inbox size={42} color="#1677ff" />
             </p>
@@ -82,6 +84,8 @@ const ImportingData = ({ onImport }: Props) => {
                 Support for a single or bulk upload. Files are supported .xlsx or .json. We can't process other files yet.
             </p>
         </Dragger>
+        </div>
+        
     );
 };
 
