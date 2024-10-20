@@ -19,6 +19,7 @@ const App: React.FC = () => {
     const savedData = localStorage.getItem('importedData');
     return savedData ? JSON.parse(savedData) : [];
   });
+  console.log(data);
 
   const deleteDataByIndex = (inputIndex: number) => {
     setData((prevData) => prevData.filter((_, index) => inputIndex !== index));

@@ -12,7 +12,7 @@ type Props = {
 
 const ImportingData = ({ onImport }: Props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+    
     const processExcel = (file: UploadFile) => {
         const reader = new FileReader();
         reader.onload = (e) => {

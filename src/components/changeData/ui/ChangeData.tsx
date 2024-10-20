@@ -1,4 +1,4 @@
-import { Card, Empty, Button, TableProps, Tag, Space, Table } from "antd"
+import { Empty, Button, TableProps, Tag, Table, Typography, Popconfirm, message } from "antd"
 import { Data } from "../../../App"
 import { mapDataForTable } from "../../../utils/mapDataForTable"
 
@@ -22,6 +22,22 @@ export interface mapDataI {
 
 //созадть модалку, где можно будет реадктировать файл 
 const ChangeData = ({ data, deleteByIndex, switchToImportData }: Props) => {
+
+    const rowSelection: TableProps<mapDataI>['rowSelection'] = {
+        onChange: (selectedRowKeys: React.Key[], selectedRows: mapDataI[]) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: (record: mapDataI) => ({
+            disabled: record.name === 'Disabled User', // Column configuration not to be checked
+            name: record.name,
+        }),
+    };
+
+    const confirm = (index: string) => {
+        deleteByIndex(+index)
+        message.success('The file was successfully deleted');
+    };
+
     const columns: TableProps<mapDataI>['columns'] = [
         {
             title: 'File name',
@@ -55,10 +71,16 @@ const ChangeData = ({ data, deleteByIndex, switchToImportData }: Props) => {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
-                <Space size="middle">
-                    <a onClick={() => deleteByIndex(+record.key)
-                    }>Delete</a>
-                </Space >
+                <Popconfirm
+                    title="Delete the file"
+                    description="Are you sure to delete this file?"
+                    onConfirm={() => confirm(record.key)}
+                    // onCancel={cancel}
+                    okText="Shure"
+                    cancelText="Cancel"
+                >
+                    <Button danger>Delete</Button>
+                </ Popconfirm>
             ),
         },
     ];
@@ -74,7 +96,8 @@ const ChangeData = ({ data, deleteByIndex, switchToImportData }: Props) => {
     }
     return (
         <div style={{ width: '100%', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Table<mapDataI>  columns={columns} dataSource={mapData} style={{ width: '100%', }} pagination={false} />
+            <Typography.Title level={5} style={{ margin: 0 }}>Select the elements that will participate in the analysis</Typography.Title>
+            <Table<mapDataI> columns={columns} dataSource={mapData} style={{ width: '100%', }} pagination={false} rowSelection={{ type: "checkbox", ...rowSelection }} />
         </div>
     )
 }
