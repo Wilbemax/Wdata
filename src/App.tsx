@@ -20,6 +20,10 @@ const App: React.FC = () => {
     return savedData ? JSON.parse(savedData) : [];
   });
 
+  const deleteDataByIndex = (inputIndex: number) => {
+    setData((prevData) => prevData.filter((_, index) => inputIndex !== index));
+  }
+
   useEffect(() => {
     localStorage.setItem('importedData', JSON.stringify(data));
   }, [data]);
@@ -33,7 +37,7 @@ const App: React.FC = () => {
       case 1:
         return <div>Content 1</div>;
       case 2:
-        return <ChangeData data={data} switchToImportData={setContentIndex} />;
+        return <ChangeData data={data} deleteByIndex={deleteDataByIndex} switchToImportData={setContentIndex} />;
       case 3:
         return <ImportingData onImport={setData} />;
       case 4:

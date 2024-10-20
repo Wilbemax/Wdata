@@ -54,7 +54,6 @@ const ImportingData = ({ onImport }: Props) => {
             }
         }
     };
-    //посмотреть возможность изменить вид листа 
     const props: UploadProps = {
         name: 'file',
         multiple: false,

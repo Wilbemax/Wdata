@@ -1,0 +1,78 @@
+{
+    "sales": [
+      {
+        "sale_id": 1,
+        "date": "2024-10-15",
+        "product_id": 101,
+        "customer_id": 1001,
+        "quantity": 3,
+        "total_price": 150.0,
+        "payment_method": "Credit Card"
+      },
+      {
+        "sale_id": 2,
+        "date": "2024-10-16",
+        "product_id": 102,
+        "customer_id": 1002,
+        "quantity": 1,
+        "total_price": 50.0,
+        "payment_method": "Cash"
+      },
+      {
+        "sale_id": 3,
+        "date": "2024-10-17",
+        "product_id": 103,
+        "customer_id": 1003,
+        "quantity": 2,
+        "total_price": 200.0,
+        "payment_method": "Credit Card"
+      }
+    ],
+    "products": [
+      {
+        "product_id": 101,
+        "name": "Laptop",
+        "category": "Electronics",
+        "price": 50.0,
+        "stock_quantity": 30
+      },
+      {
+        "product_id": 102,
+        "name": "Mouse",
+        "category": "Electronics",
+        "price": 10.0,
+        "stock_quantity": 100
+      },
+      {
+        "product_id": 103,
+        "name": "Office Chair",
+        "category": "Furniture",
+        "price": 100.0,
+        "stock_quantity": 20
+      }
+    ],
+    "customers": [
+      {
+        "customer_id": 1001,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "+1234567890",
+        "address": "123 Main St, Springfield, USA"
+      },
+      {
+        "customer_id": 1002,
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "phone": "+1234567891",
+        "address": "456 Oak St, Springfield, USA"
+      },
+      {
+        "customer_id": 1003,
+        "name": "Michael Johnson",
+        "email": "michael.johnson@example.com",
+        "phone": "+1234567892",
+        "address": "789 Pine St, Springfield, USA"
+      }
+    ]
+  }
+  
