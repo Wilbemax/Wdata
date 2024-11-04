@@ -31,7 +31,7 @@ const ImportingData = ({ onImport }: Props) => {
                     setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
                     return;
                 }
-                setData({ fileName: file.name, data: jsonData });
+                setData({ fileName: file.name, data: jsonData, selected: false });
             };
             reader.readAsBinaryString(file.originFileObj as Blob);
         } catch (e) {
@@ -51,7 +51,7 @@ const ImportingData = ({ onImport }: Props) => {
                     return;
 
                 }
-                setData({fileName: file.name, data: jsonData});
+                setData({fileName: file.name, data: jsonData, selected: false});
             } catch (e) {
                 message.error('Error processing the JSON file.');
                 setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid)); // Удаляем файл

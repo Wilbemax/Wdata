@@ -1,11 +1,10 @@
 import { Empty, Button, TableProps, Tag, Table, Typography, Popconfirm, message } from "antd"
-import { Data } from "../../../App"
 import { mapDataForTable } from "../../../utils/mapDataForTable"
 import { dataStore } from "../../../store/dataStore"
 
 type Props = {
-    data: Data[]
-    deleteByIndex: (index: number) => void
+    // data: Data[]
+    // deleteByIndex: (index: number) => void
     switchToImportData: (index: number) => void
 }
 
@@ -22,20 +21,31 @@ export interface mapDataI {
 
 
 //созадть модалку, где можно будет реадктировать файл 
-const ChangeData = ({ deleteByIndex, switchToImportData }: Props) => {
+const ChangeData = ({ switchToImportData }: Props) => {
     const data = dataStore(state => state.data)
+    const removeData = dataStore(state => state.removeData)
+    const toggleSelected = dataStore(state => state.toggleSelected)
+    console.log(data)
     const rowSelection: TableProps<mapDataI>['rowSelection'] = {
-        onChange: (selectedRowKeys: React.Key[], selectedRows: mapDataI[]) => {
-            // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        onChange: (selectedRowKeys, selectedRows) => {
+            data.map(item => {
+                selectedRows.forEach((row) => {
+                    if (`${row.name}.`)
+                })
+            })
+           
         },
         getCheckboxProps: (record: mapDataI) => ({
-            disabled: record.name === 'Disabled User', // Column configuration not to be checked
             name: record.name,
+            defaultChecked: data.find((item) => item.fileName === record.name)?.selected || false,
         }),
     };
 
-    const confirm = (index: string) => {
-        deleteByIndex(+index)
+
+    const confirm = (name: string) => {
+        console.log(name);  
+
+        removeData(name)
         message.success('The file was successfully deleted');
     };
 
@@ -75,13 +85,14 @@ const ChangeData = ({ deleteByIndex, switchToImportData }: Props) => {
                 <Popconfirm
                     title="Delete the file"
                     description="Are you sure to delete this file?"
-                    onConfirm={() => confirm(record.key)}
+                    onConfirm={() => confirm(`${record.name}.${record.type}`)}
+
                     // onCancel={cancel}
                     okText="Shure"
                     cancelText="Cancel"
                 >
-                    <Button danger>Delete</Button>
-                </ Popconfirm>
+                    <Button danger >Delete</Button>
+                </ Popconfirm >
             ),
         },
     ];
@@ -96,7 +107,7 @@ const ChangeData = ({ deleteByIndex, switchToImportData }: Props) => {
         </div>
     }
     return (
-        <div style={{ width: '100%', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ width: '100%', display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: 16 }}>
             <Typography.Title level={5} style={{ margin: 0 }}>Select the elements that will participate in the analysis</Typography.Title>
             <Table<mapDataI> columns={columns} dataSource={mapData} style={{ width: '100%', }} pagination={false} rowSelection={{ type: "checkbox", ...rowSelection }} />
         </div>

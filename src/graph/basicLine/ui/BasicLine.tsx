@@ -1,24 +1,14 @@
 import { Line } from '@ant-design/plots';
+import { dataStore } from '../../../store/dataStore';
 
-interface dataI {
-        year?: number;
-        value?: number;
-}
-const BasicLine = (dataProps: dataI) => {
-    let data
-    if (dataProps.value === undefined && dataProps.year === undefined) {
-        data =  [
-            { year: '1991', value: 3 },
-            { year: '1992', value: 4 },
-            { year: '1993', value: 3.5 },
-            { year: '1994', value: 5 },
-            { year: '1995', value: 4.9 },
-            { year: '1996', value: 6 },
-            { year: '1997', value: 7 },
-            { year: '1998', value: 9 },
-            { year: '1999', value: 13 },
-          ]
-    }
+// interface dataI {
+//         year?: number;
+//         value?: number;
+// }
+const BasicLine = () => {
+    
+    const data =  dataStore(state => state.data)
+    
     const config = {
         data,
         xField: 'year',
@@ -36,6 +26,6 @@ const BasicLine = (dataProps: dataI) => {
             lineWidth: 2,
         },
     };
-    return <Line {...config} autoFit={true} width={320} height={200}/>;
+    return <Line {...config} autoFit={true} />;
 };
 export { BasicLine }

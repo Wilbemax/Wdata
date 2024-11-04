@@ -10,25 +10,18 @@ const { Header, Content, Footer, Sider } = Layout;
 
 export interface Data {
   fileName: string;
+  selected: boolean;
   data: Array<unknown>;
 }
 
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [contentIndex, setContentIndex] = useState(1);
-  const [data, setData] = useState<Data[]>(() => {
-    const savedData = localStorage.getItem('importedData');
-    return savedData ? JSON.parse(savedData) : [];
-  });
+  
   // console.log(data);
 
-  const deleteDataByIndex = (inputIndex: number) => {
-    setData((prevData) => prevData.filter((_, index) => inputIndex !== index));
-  }
+  
 
-  useEffect(() => {
-    localStorage.setItem('importedData', JSON.stringify(data));
-  }, [data]);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -37,11 +30,11 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (contentIndex) {
       case 1:
-        return <AllCharts data={data}/>;
+        return <AllCharts />;
       case 2:
-        return <ChangeData data={data} deleteByIndex={deleteDataByIndex} switchToImportData={setContentIndex} />;
+        return <ChangeData  switchToImportData={setContentIndex} />;
       case 3:
-        return <ImportingData onImport={setData} />;
+        return <ImportingData />;
       case 4:
         return <div>Content 4</div>;
       case 5:
