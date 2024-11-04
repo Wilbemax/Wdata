@@ -1,6 +1,7 @@
 import { Empty, Button, TableProps, Tag, Table, Typography, Popconfirm, message } from "antd"
 import { Data } from "../../../App"
 import { mapDataForTable } from "../../../utils/mapDataForTable"
+import { dataStore } from "../../../store/dataStore"
 
 type Props = {
     data: Data[]
@@ -21,11 +22,11 @@ export interface mapDataI {
 
 
 //созадть модалку, где можно будет реадктировать файл 
-const ChangeData = ({ data, deleteByIndex, switchToImportData }: Props) => {
-
+const ChangeData = ({ deleteByIndex, switchToImportData }: Props) => {
+    const data = dataStore(state => state.data)
     const rowSelection: TableProps<mapDataI>['rowSelection'] = {
         onChange: (selectedRowKeys: React.Key[], selectedRows: mapDataI[]) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         },
         getCheckboxProps: (record: mapDataI) => ({
             disabled: record.name === 'Disabled User', // Column configuration not to be checked

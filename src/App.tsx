@@ -4,6 +4,7 @@ import { SiderBar } from './components/sider-bar';
 import { AppHeader } from './components/header';
 import { ImportingData } from './components/importingData';
 import { ChangeData } from './components/changeData';
+import { AllCharts } from './components/allCharts';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -19,7 +20,7 @@ const App: React.FC = () => {
     const savedData = localStorage.getItem('importedData');
     return savedData ? JSON.parse(savedData) : [];
   });
-  console.log(data);
+  // console.log(data);
 
   const deleteDataByIndex = (inputIndex: number) => {
     setData((prevData) => prevData.filter((_, index) => inputIndex !== index));
@@ -36,7 +37,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (contentIndex) {
       case 1:
-        return <div>Content 1</div>;
+        return <AllCharts data={data}/>;
       case 2:
         return <ChangeData data={data} deleteByIndex={deleteDataByIndex} switchToImportData={setContentIndex} />;
       case 3:
@@ -59,10 +60,10 @@ const App: React.FC = () => {
         <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px' }}>
           <AppHeader />
         </Header>
-        <Content style={{ margin: '16px' }}>
+        <Content style={{ padding: '16px' }}>
           <div
             style={{
-              padding: 24,
+              
               minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,

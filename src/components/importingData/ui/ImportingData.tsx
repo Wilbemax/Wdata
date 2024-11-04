@@ -4,6 +4,7 @@ import Dragger from 'antd/es/upload/Dragger';
 import { Inbox } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { Data } from '../../../App';
+import { dataStore } from '../../../store/dataStore';
 
 type Props = {
     onImport: (data: Data[] | ((prevData: Data[]) => Data[])) => void;
@@ -12,36 +13,52 @@ type Props = {
 
 const ImportingData = ({ onImport }: Props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    
+    const setData = dataStore((state) => state.setData)
+    const data = dataStore((state) => state.data);
+    // console.log(data)
+
     const processExcel = (file: UploadFile) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const binaryStr = e.target?.result;
-            const workbook = XLSX.read(binaryStr, { type: 'binary' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData: Data[] = XLSX.utils.sheet_to_json(worksheet);
-            saveData(jsonData, file.name);
-        };
-        reader.readAsBinaryString(file.originFileObj as Blob);
+        try {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const binaryStr = e.target?.result;
+                const workbook = XLSX.read(binaryStr, { type: 'binary' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData: Data[] = XLSX.utils.sheet_to_json(worksheet);
+                if (data.find((item) => item.fileName === file.name)) {
+                    message.error(`File ${file.name} already exists!`);
+                    setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
+                    return;
+                }
+                setData({ fileName: file.name, data: jsonData });
+            };
+            reader.readAsBinaryString(file.originFileObj as Blob);
+        } catch (e) {
+            message.error('Error processing the file.');
+            setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid)); // Удаляем файл
+        }
     };
 
     const processJson = (file: UploadFile) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-            const jsonData: Data[] = JSON.parse(e.target?.result as string);
-            saveData(jsonData, file.name);
+            try {
+                const jsonData: Data[] = JSON.parse(e.target?.result as string);
+                if (data.find((item) => item.fileName === file.name)) {
+                    message.error(`File ${file.name} already exists!`);
+                    setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
+                    return;
+
+                }
+                setData({fileName: file.name, data: jsonData});
+            } catch (e) {
+                message.error('Error processing the JSON file.');
+                setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid)); // Удаляем файл
+            }
         };
         reader.readAsText(file.originFileObj as Blob);
     };
-
-    const saveData = (data: Array<unknown>, fileName: string) => {
-        const importedData: Data = { fileName, data };
-        onImport((prevData: Data[]) => [...prevData, importedData]);
-        message.success('Data imported and saved locally!');
-    };
-
-
 
     const onChangeFileList: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
@@ -54,10 +71,21 @@ const ImportingData = ({ onImport }: Props) => {
             }
         }
     };
+
+
+    const saveData = (data: Array<unknown>, fileName: string) => {
+        const importedData: Data = { fileName, data };
+        onImport((prevData: Data[]) => [...prevData, importedData]);
+        setData(importedData)
+        message.success('Data imported and saved locally!');
+    };
+
+
     const props: UploadProps = {
         name: 'file',
         multiple: false,
         listType: 'picture',
+        fileList,
         beforeUpload(file) {
             const isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
             const isJson = file.type === 'application/json';
@@ -73,18 +101,18 @@ const ImportingData = ({ onImport }: Props) => {
     };
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360}}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360 }}>
             <Dragger {...props} style={{ maxWidth: 650 }}>
-            <p className="ant-upload-drag-icon">
-                <Inbox size={42} color="#1677ff" />
-            </p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
-            <p className="ant-upload-hint">
-                Support for a single or bulk upload. Files are supported .xlsx or .json. We can't process other files yet.
-            </p>
-        </Dragger>
+                <p className="ant-upload-drag-icon">
+                    <Inbox size={42} color="#1677ff" />
+                </p>
+                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                <p className="ant-upload-hint">
+                    Support for a single or bulk upload. Files are supported .xlsx or .json. We can't process other files yet.
+                </p>
+            </Dragger>
         </div>
-        
+
     );
 };
 
