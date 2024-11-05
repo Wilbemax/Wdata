@@ -20,30 +20,32 @@ export interface mapDataI {
 
 
 
-//созадть модалку, где можно будет реадктировать файл 
 const ChangeData = ({ switchToImportData }: Props) => {
     const data = dataStore(state => state.data)
     const removeData = dataStore(state => state.removeData)
     const toggleSelected = dataStore(state => state.toggleSelected)
     console.log(data)
     const rowSelection: TableProps<mapDataI>['rowSelection'] = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            data.map(item => {
-                selectedRows.forEach((row) => {
-                    if (`${row.name}.`)
-                })
-            })
-           
+        onChange: (_, selectedRows) => {
+            const selectedNames = selectedRows.map((item) => `${item.name}.${item.type}`);
+            
+            data.forEach((dataItem) => {
+                const shouldBeSelected = selectedNames.includes(dataItem.fileName);
+                
+                if (dataItem.selected !== shouldBeSelected) {
+                    toggleSelected(dataItem.fileName);
+                }
+            });
         },
         getCheckboxProps: (record: mapDataI) => ({
             name: record.name,
-            defaultChecked: data.find((item) => item.fileName === record.name)?.selected || false,
+            checked: data.find((item) => item.fileName === `${record.name}.${record.type}`)?.selected || false,
         }),
     };
 
 
     const confirm = (name: string) => {
-        console.log(name);  
+        console.log(name);
 
         removeData(name)
         message.success('The file was successfully deleted');
