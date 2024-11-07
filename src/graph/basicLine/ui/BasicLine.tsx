@@ -4,27 +4,39 @@ import { Modal, Select, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface SelectedDataInterface {
-    x: string;
-    y: string;
+    [key: string]: string;
+}
+
+
+interface FileData {
+    [key: string]: unknown; // Замените на конкретные типы свойств, если они известны
+}
+
+interface File {
+    fileName: string;
+    selected: boolean;
+    data: FileData[];
 }
 
 const BasicLine = () => {
     const data = dataStore(state => state.data);
+    console.log(data);
+    
+
     const [selectedData, setSelectedData] = useState<SelectedDataInterface[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [xField, setXfield] = useState<string>('');
     const [yField, setYfield] = useState<string>('');
 
-    const selectedFile = dataStore(state => state.data.find(file => file.selected));
+    const selectedFile = dataStore(state => state.data.find(file => file.selected) as File);
     const fields = selectedFile && selectedFile.data.length > 0 ? Object.keys(selectedFile.data[0]) : [];
 
     useEffect(() => {
-        console.log(selectedData.find(item => Object.keys(item)[0] == xField))
-        if (selectedFile  ) {
+        if (selectedFile) {
             const filteredData = selectedFile.data.map(item => ({
-                x: item[xField],
-                y: item[yField]
+                [xField]: item[xField] as string,
+                [yField]: item[yField] as string
             }));
             setSelectedData(filteredData);
         }
@@ -32,7 +44,7 @@ const BasicLine = () => {
         if (selectedData.length === 0) {
             setIsModalOpen(true);
         }
-    }, [xField, yField])
+    }, [xField, yField]);
 
     const handleOk = () => {
         setIsModalOpen(false);
@@ -56,8 +68,8 @@ const BasicLine = () => {
 
     const config = {
         data: dataForChart,
-        xField: 'x',
-        yField: 'y',
+        xField: xField || 'year',
+        yField: yField || 'value',
         point: {
             shapeField: 'square',
             sizeField: 4,

@@ -24,6 +24,8 @@ export const dataStore = create<DataStoreI>()(
 					}));
 				},
 				toggleSelected: (dataName: string) => {
+					console.log("trigger");
+					
 					set((state) => ({
 						data: state.data.map((item) =>
 							item.fileName === dataName

@@ -1,13 +1,11 @@
-import { Empty, Button, TableProps, Tag, Table, Typography, Popconfirm, message } from "antd"
-import { mapDataForTable } from "../../../utils/mapDataForTable"
-import { dataStore } from "../../../store/dataStore"
+import { Empty, Button, TableProps, Tag, Table, Typography, Popconfirm, message } from "antd";
+import { mapDataForTable } from "../../../utils/mapDataForTable";
+import { dataStore } from "../../../store/dataStore";
+import { useEffect, useState } from "react";
 
 type Props = {
-    // data: Data[]
-    // deleteByIndex: (index: number) => void
-    switchToImportData: (index: number) => void
-}
-
+    switchToImportData: (index: number) => void;
+};
 
 export interface mapDataI {
     key: string;
@@ -16,42 +14,46 @@ export interface mapDataI {
     type: string;
 }
 
-
-
-
-
 const ChangeData = ({ switchToImportData }: Props) => {
-    const data = dataStore(state => state.data)
-    const removeData = dataStore(state => state.removeData)
-    const toggleSelected = dataStore(state => state.toggleSelected)
-    console.log(data)
+
+    const data = dataStore((state) => state.data);
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+
+    const removeData = dataStore((state) => state.removeData);
+    const toggleSelected = dataStore((state) => state.toggleSelected);
+
+    useEffect(() => {
+        const initialSelectedKeys = data.map((item, index) => item.selected ? index.toString() : '');
+        setSelectedRowKeys(initialSelectedKeys);
+    }, [data]);
+
+
     const rowSelection: TableProps<mapDataI>['rowSelection'] = {
+        selectedRowKeys,
         onChange: (_, selectedRows) => {
             const selectedNames = selectedRows.map((item) => `${item.name}.${item.type}`);
-            
+
+            ///########################## работает 
             data.forEach((dataItem) => {
                 const shouldBeSelected = selectedNames.includes(dataItem.fileName);
-                
                 if (dataItem.selected !== shouldBeSelected) {
                     toggleSelected(dataItem.fileName);
                 }
             });
+
+
         },
         getCheckboxProps: (record: mapDataI) => {
-            console.log(data.filter(item => item.fileName === `${record.name}.${record.type}`)[0].selected);
-            
-            return ({
+            return {
                 name: record.name,
-                checked:data.filter(item => item.fileName === `${record.name}.${record.type}`)[0].selected,
-            })
+            };
         },
     };
 
-    
     const confirm = (name: string) => {
-        console.log(name);
-
-        removeData(name)
+        removeData(name);
         message.success('The file was successfully deleted');
     };
 
@@ -72,17 +74,9 @@ const ChangeData = ({ switchToImportData }: Props) => {
             key: 'type',
             dataIndex: 'type',
             render: (_, { type }) => {
-                let color = type === 'json' ? 'yellow' : 'green';
-                if (type === 'loser') {
-                    color = 'volcano';
-                }
-                return (
-                    <Tag color={color} key={type}>
-                        {type.toUpperCase()}
-                    </Tag>
-                );
-            }
-            ,
+                const color = type === 'json' ? 'yellow' : 'green';
+                return <Tag color={color} key={type}>{type.toUpperCase()}</Tag>;
+            },
         },
         {
             title: 'Action',
@@ -92,32 +86,40 @@ const ChangeData = ({ switchToImportData }: Props) => {
                     title="Delete the file"
                     description="Are you sure to delete this file?"
                     onConfirm={() => confirm(`${record.name}.${record.type}`)}
-
-                    // onCancel={cancel}
-                    okText="Shure"
+                    okText="Sure"
                     cancelText="Cancel"
                 >
-                    <Button danger >Delete</Button>
-                </ Popconfirm >
+                    <Button danger>Delete</Button>
+                </Popconfirm>
             ),
         },
     ];
-    const mapData = mapDataForTable(data)
 
-    // сделать возможность скрывть файлы от построения графиков 
+    const mapData = mapDataForTable(data);
 
     if (data.length === 0) {
-        return <div style={{ width: '100%', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
-            <Empty />
-            <Button onClick={() => switchToImportData(3)} type='primary'>Importing data</Button>
-        </div>
+        return (
+            <div style={{ width: '100%', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
+                <Empty />
+                <Button onClick={() => switchToImportData(3)} type='primary'>Importing data</Button>
+            </div>
+        );
     }
+
     return (
         <div style={{ width: '100%', display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: 16 }}>
-            <Typography.Title level={5} style={{ margin: 0 }}>Select the elements that will participate in the analysis</Typography.Title>
-            <Table<mapDataI> columns={columns} dataSource={mapData} style={{ width: '100%', }} pagination={false} rowSelection={{ type: "checkbox", ...rowSelection }} />
+            <Typography.Title level={5} style={{ margin: 0 }}>
+                Select the elements that will participate in the analysis
+            </Typography.Title>
+            <Table<mapDataI>
+                columns={columns}
+                dataSource={mapData}
+                style={{ width: '100%' }}
+                pagination={false}
+                rowSelection={{ type: "checkbox", ...rowSelection }}
+            />
         </div>
-    )
-}
+    );
+};
 
-export { ChangeData }
+export { ChangeData };
