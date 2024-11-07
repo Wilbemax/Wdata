@@ -37,13 +37,17 @@ const ChangeData = ({ switchToImportData }: Props) => {
                 }
             });
         },
-        getCheckboxProps: (record: mapDataI) => ({
-            name: record.name,
-            checked: data.find((item) => item.fileName === `${record.name}.${record.type}`)?.selected || false,
-        }),
+        getCheckboxProps: (record: mapDataI) => {
+            console.log(data.filter(item => item.fileName === `${record.name}.${record.type}`)[0].selected);
+            
+            return ({
+                name: record.name,
+                checked:data.filter(item => item.fileName === `${record.name}.${record.type}`)[0].selected,
+            })
+        },
     };
 
-
+    
     const confirm = (name: string) => {
         console.log(name);
 

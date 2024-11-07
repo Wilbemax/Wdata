@@ -45,12 +45,17 @@ const ImportingData = ({ onImport }: Props) => {
         reader.onload = (e) => {
             try {
                 const jsonData: Data[] = JSON.parse(e.target?.result as string);
+
+                // if (Object.keys(jsonData).length !== 0 ){
+                //     jsonData = jsonData.
+                // }
+
                 if (data.find((item) => item.fileName === file.name)) {
                     message.error(`File ${file.name} already exists!`);
                     setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
                     return;
-
                 }
+
                 setData({fileName: file.name, data: jsonData, selected: false});
             } catch (e) {
                 message.error('Error processing the JSON file.');
