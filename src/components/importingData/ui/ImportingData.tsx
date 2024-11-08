@@ -1,5 +1,5 @@
-import React, { useState, } from 'react';
-import { UploadFile, UploadProps, message } from 'antd';
+import  { useState, } from 'react';
+import { UploadFile, UploadProps, message, notification } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import { Inbox } from 'lucide-react';
 import * as XLSX from 'xlsx';
@@ -12,6 +12,19 @@ type Props = {
 
 
 const ImportingData = ({ onImport }: Props) => {
+
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const openNotificationWithIcon = () => {
+      api.info({
+        message: 'What does it mean?',
+        description:
+          'At the moment, the functionality is under development, an example of the data can be found on the About tab.',
+      });
+    };
+
+    
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const setData = dataStore((state) => state.setData)
     const data = dataStore((state) => state.data);
@@ -46,9 +59,12 @@ const ImportingData = ({ onImport }: Props) => {
             try {
                 const jsonData: Data[] = JSON.parse(e.target?.result as string);
 
-                // if (Object.keys(jsonData).length !== 0 ){
-                //     jsonData = jsonData.
-                // }
+                if (!Array.isArray(jsonData)) {
+                    message.error('The JSON file we not can convert this file yet');
+                    openNotificationWithIcon()
+                    setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
+                    return;
+                }
 
                 if (data.find((item) => item.fileName === file.name)) {
                     message.error(`File ${file.name} already exists!`);
@@ -56,10 +72,10 @@ const ImportingData = ({ onImport }: Props) => {
                     return;
                 }
 
-                setData({fileName: file.name, data: jsonData, selected: false});
+                setData({ fileName: file.name, data: jsonData, selected: false });
             } catch (e) {
                 message.error('Error processing the JSON file.');
-                setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid)); // Удаляем файл
+                setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
             }
         };
         reader.readAsText(file.originFileObj as Blob);
@@ -106,17 +122,23 @@ const ImportingData = ({ onImport }: Props) => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360 }}>
-            <Dragger {...props} style={{ maxWidth: 650 }}>
-                <p className="ant-upload-drag-icon">
-                    <Inbox size={42} color="#1677ff" />
-                </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                <p className="ant-upload-hint">
-                    Support for a single or bulk upload. Files are supported .xlsx or .json. We can't process other files yet.
-                </p>
-            </Dragger>
-        </div>
+        <>
+        {contextHolder}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360 }}>
+
+                <Dragger {...props} style={{ maxWidth: 650 }}>
+                    <p className="ant-upload-drag-icon">
+                        <Inbox size={42} color="#1677ff" />
+                    </p>
+                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <p className="ant-upload-hint">
+                        Support for a single or bulk upload. Files are supported .xlsx or .json. We can't process other files yet.
+                    </p>
+                </Dragger>
+            </div>
+
+        </>
+
 
     );
 };
