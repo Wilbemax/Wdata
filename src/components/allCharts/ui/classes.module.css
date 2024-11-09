@@ -1,10 +1,13 @@
 .wrapper {
     padding: 16px;
-    height: 70svh;
+    height: 80svh;
+
+    min-height: 80svh;
     overflow: scroll;
     display: flex;
     flex-wrap: wrap;
     overflow-x: hidden;
+    overflow-y: auto;
     gap: 1rem;
 }
 .chart {
@@ -16,6 +19,4 @@
 	padding: 0 1rem;
 	border: 1px solid #ccc;
 }
-.chart:hover {
 
-}

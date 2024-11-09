@@ -124,9 +124,9 @@ const ImportingData = ({ onImport }: Props) => {
     return (
         <>
         {contextHolder}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80svh' }}>
 
-                <Dragger {...props} style={{ maxWidth: 650 }}>
+                <Dragger {...props} style={{ width: '100%', height: '80%' }}>
                     <p className="ant-upload-drag-icon">
                         <Inbox size={42} color="#1677ff" />
                     </p>

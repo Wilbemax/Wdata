@@ -1,6 +1,6 @@
 import { Line } from '@ant-design/plots';
 import { dataStore } from '../../../store/dataStore';
-import { Modal, Select, Typography } from 'antd';
+import { Button, Modal, Select, Typography, Watermark } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface SelectedDataInterface {
@@ -21,7 +21,7 @@ interface File {
 const BasicLine = () => {
     const data = dataStore(state => state.data);
     console.log(data);
-    
+
 
     const [selectedData, setSelectedData] = useState<SelectedDataInterface[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,10 +34,12 @@ const BasicLine = () => {
 
     useEffect(() => {
         if (selectedFile) {
-            const filteredData = selectedFile.data.map(item => ({
-                [xField]: item[xField] as string,
-                [yField]: item[yField] as string
-            }));
+            const filteredData = selectedFile.data.map(item => {
+                return ({
+                    [xField]: item[xField] as string,
+                    [yField]: item[yField] as string
+                })
+            });
             setSelectedData(filteredData);
         }
 
@@ -70,9 +72,10 @@ const BasicLine = () => {
         data: dataForChart,
         xField: xField || 'year',
         yField: yField || 'value',
+
         point: {
             shapeField: 'square',
-            sizeField: 4,
+            // sizeField: 1,
         },
         interaction: {
             tooltip: {
@@ -81,11 +84,17 @@ const BasicLine = () => {
         },
         style: {
             lineWidth: 2,
+            gradient: 'x',
         },
+        slider: {
+            x: { labelFormatter: (d) => d },
+            y: { labelFormatter: '~s' },
+        },
+        seriesField: 'division',
     };
 
     return (
-        <>
+        <div style={{ width: '100%', height: '100%' }}>
             <Modal title="Choose data" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                 <div style={{ width: '100%', display: 'flex', gap: '1rem' }}>
                     <Select
@@ -122,9 +131,17 @@ const BasicLine = () => {
                     />
                 </div>
                 {xField === yField && xField !== '' ? (<Typography.Paragraph type='warning' style={{ width: '100%', textAlign: 'end' }}> *You chose similar fields</Typography.Paragraph>) : null}
-            </Modal>
-            <Line {...config} autoFit={true} />
-        </>
+            </Modal >
+            {selectedData.length > 0 ? <Line {...config} autoFit={true} /> : <Watermark
+                style={{height : '100%'}}
+                height={60}
+                width={100}
+                content={['WBM', 'Example chart']}
+            >
+                <Line {...config} autoFit={true} />
+            </Watermark>}
+            
+        </div>
     );
 };
 

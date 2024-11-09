@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, theme } from 'antd';
+import { Layout, theme, Typography } from 'antd';
 import { SiderBar } from './components/sider-bar';
 import { AppHeader } from './components/header';
 import { ImportingData } from './components/importingData';
@@ -46,11 +46,11 @@ const App: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100svh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <Sider collapsible collapsed={collapsed} width={240}onCollapse={(value) => setCollapsed(value)}>
         <SiderBar collapsed={collapsed} contentIndex={contentIndex} changeContentIndex={setContentIndex} />
       </Sider>
       <Layout>
-        <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px' }}>
+        <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px'}}>
           <AppHeader />
         </Header>
         <Content style={{ padding: '16px' }}>
@@ -66,7 +66,7 @@ const App: React.FC = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          WBM ©{new Date().getFullYear()} 
+          <Typography.Title level={4} style={{color: '#4f4f4f'}}>WBM ©{new Date().getFullYear()} </Typography.Title> 
         </Footer>
       </Layout>
     </Layout>
