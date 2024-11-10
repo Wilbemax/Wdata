@@ -8,9 +8,7 @@ import { dataString } from "../type"
 import { dataStore } from "../../../store/dataStore"
 
 
-type Props = {
-    data: Data[]
-}
+
 
 const AllCharts = () => {
     const [selectedData, setSelectedData] = useState<dataString>(null)
@@ -23,20 +21,20 @@ const AllCharts = () => {
 
         default:
             return (
-                
-                    <div className={classes.wrapper}>
-                        <Card
-                            hoverable
-                            bordered
-                            style={{ width: 250, height: 220, padding: 1 }}
-                            cover={<img alt="example" src={'/BaseLine1.png'} />}
-                            onClick={() => setSelectedData("BasicPlot")}
 
-                        >
-                            <Meta title="Basic line plot" />
-                        </Card>
-                    </div >
-               
+                <div className={classes.wrapper}>
+                    <Card
+                        hoverable
+                        bordered
+                        style={{ width: 250, height: 220, padding: 1 }}
+                        cover={<img alt="example" src={'/BaseLine1.png'} />}
+                        onClick={() => setSelectedData("BasicPlot")}
+
+                    >
+                        <Meta title="Basic line plot" />
+                    </Card>
+                </div >
+
             )
     }
 

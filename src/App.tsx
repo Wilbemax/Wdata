@@ -5,6 +5,7 @@ import { AppHeader } from './components/header';
 import { ImportingData } from './components/importingData';
 import { ChangeData } from './components/changeData';
 import { AllCharts } from './components/allCharts';
+import { LayoutGraph } from './components/layout';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -17,10 +18,10 @@ export interface Data {
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [contentIndex, setContentIndex] = useState(1);
-  
+
   // console.log(data);
 
-  
+
 
 
   const {
@@ -32,7 +33,7 @@ const App: React.FC = () => {
       case 1:
         return <AllCharts />;
       case 2:
-        return <ChangeData  switchToImportData={setContentIndex} />;
+        return <ChangeData switchToImportData={setContentIndex} />;
       case 3:
         return <ImportingData />;
       case 4:
@@ -46,18 +47,36 @@ const App: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100svh' }}>
-      <Sider collapsible collapsed={collapsed} width={240}onCollapse={(value) => setCollapsed(value)}>
+      <Sider collapsible collapsed={collapsed} width={240} onCollapse={(value) => setCollapsed(value)}>
         <SiderBar collapsed={collapsed} contentIndex={contentIndex} changeContentIndex={setContentIndex} />
       </Sider>
       <Layout>
-        <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px'}}>
+        <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px' }}>
           <AppHeader />
         </Header>
         <Content style={{ padding: '16px' }}>
+          {/* {contentIndex === 1 ? <LayoutGraph>
+            <div
+              style={{
+                // minHeight: 360,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {renderContent()}
+            </div>
+          </LayoutGraph> : <div
+            style={{
+              // minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {renderContent()}
+          </div>} */}
           <div
             style={{
-              
-              minHeight: 360,
+              // minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -66,7 +85,7 @@ const App: React.FC = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          <Typography.Title level={4} style={{color: '#4f4f4f'}}>WBM ©{new Date().getFullYear()} </Typography.Title> 
+          <Typography.Title level={4} style={{ color: '#4f4f4f' }}>WBM ©{new Date().getFullYear()} </Typography.Title>
         </Footer>
       </Layout>
     </Layout>
