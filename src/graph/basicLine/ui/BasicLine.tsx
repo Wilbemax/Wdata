@@ -1,8 +1,10 @@
 import { Line } from '@ant-design/plots';
 import { dataStore } from '../../../store/dataStore';
-import { Button, Modal, Select, Typography, Watermark } from 'antd';
+import { Button, Watermark } from 'antd';
 import { useEffect, useState } from 'react';
 import { Pen, Settings } from 'lucide-react';
+import { LineDataSelectModal } from './LineDataSelectModal';
+import { LineDataViewDrawer } from './LineDataViewDrawer';
 
 interface SelectedDataInterface {
     [key: string]: string;
@@ -23,14 +25,15 @@ const BasicLine = () => {
     const data = dataStore(state => state.data);
     console.log(data);
 
-
+    // modal changing data
     const [selectedData, setSelectedData] = useState<SelectedDataInterface[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [xField, setXfield] = useState<string>('');
-    const [yField, setYfield] = useState<string>('');
+    const [yField, setYfield] = useState<string | number>('');
 
     const selectedFile = dataStore(state => state.data.find(file => file.selected) as File);
+
     const fields = selectedFile && selectedFile.data.length > 0 ? Object.keys(selectedFile.data[0]) : [];
 
     useEffect(() => {
@@ -59,6 +62,18 @@ const BasicLine = () => {
 
 
 
+    // drawer for setting chart view 
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+
+    const [slider, setSlider] = useState<boolean>(false)
+    const [more1Line, setMore1Line] = useState<boolean>(false)
+    const [categoryColor, setCategoryColor] = useState<string | undefined>(undefined)
+
+    const [dotSize, setDotSize] = useState<number>(1)
+
+
+
+
     const dataForChart = (selectedData.length > 0 && xField !== '' && yField !== '') ? selectedData : [
         { year: '1991', value: 3 },
         { year: '1992', value: 4 },
@@ -77,8 +92,8 @@ const BasicLine = () => {
         yField: yField || 'value',
 
         point: {
-            shapeField: 'square',
-            // sizeField: 1,
+            shapeField: 'point',
+            sizeField: dotSize,
         },
         interaction: {
             tooltip: {
@@ -89,75 +104,72 @@ const BasicLine = () => {
             lineWidth: 2,
             gradient: 'x',
         },
-        slider: {
-            x: { labelFormatter: (d) => d },
+        slider: slider && {
+            x: { labelFormatter: (d: unknown) => d },
             y: { labelFormatter: '~s' },
         },
-        seriesField: 'division',
+        colorField: categoryColor !== '' ? categoryColor : false,
+        // seriesField: 'division',
     };
 
     return (
         <div style={{ width: '100%', height: 'calc(100% - 1rem)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Modal title="Choose data" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <div style={{ width: '100%', display: 'flex', gap: '1rem' }}>
-                    <Select
-                        style={{ width: '100%' }}
-                        showSearch
-                        placeholder="Select horizontal field"
-                        onChange={(value) => setXfield(value)}
-                        status={xField === yField && xField !== '' ? 'warning' : ''}
-                        filterOption={(input, option) =>
-                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={
-                            fields.map(field => ({
-                                label: field,
-                                value: field
-                            }))
-                        }
-                    />
-                    <Select
-                        showSearch
-                        style={{ width: '100%' }}
-                        onChange={(value) => setYfield(value)}
-                        status={xField === yField && xField !== '' ? 'warning' : ''}
-                        placeholder="Select vertical field"
-                        filterOption={(input, option) =>
-                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={
-                            fields.map(field => ({
-                                label: field,
-                                value: field
-                            }))
-                        }
-                    />
-                </div>
-                {xField === yField && xField !== '' ? (<Typography.Paragraph type='warning' style={{ width: '100%', textAlign: 'end' }}> *You chose similar fields</Typography.Paragraph>) : null}
-            </Modal >
-            
-                {
-                    (selectedData.length > 0 && xField !== '' && yField !== '') ?
-                        <Line {...config} autoFit={true} animate={true}/>
-                        :
-                        <Watermark
-                            style={{ height: '100%' }}
-                            height={60}
-                            width={100}
-                            content={['WBM', 'Example chart']}
-                        >
-                            <Line {...config} autoFit={true}  animate={true}/>
-                        </Watermark>
-                }
+            <LineDataSelectModal
+                fields={fields}
+                isModalOpen={isModalOpen}
+                xField={xField}
+                yField={yField}
+                handleCancel={handleCancel}
+                handleOk={handleOk}
+                setXfield={setXfield}
+                setYfield={setYfield}
+            />
+            <LineDataViewDrawer
+                drawerOpen={drawerOpen}
+                setDrawerOpen={setDrawerOpen}
 
-            
+                slider={slider}
+                setSlider={setSlider}
+
+                fields={fields}
+                more1Line={more1Line}
+                setMore1Line={setMore1Line}
+                setCategoryColor={setCategoryColor}
+
+                dotSize={dotSize}
+                setDotSize={setDotSize}
+
+            />
+
+
+
+
+            {
+                (selectedData.length > 0 && xField !== '' && yField !== '') ?
+                    <Line {...config} autoFit={true} animate={true} />
+                    :
+                    <Watermark
+                        style={{ height: '100%' }}
+                        height={60}
+                        width={100}
+                        content={['WBM', 'Example chart']}
+                    >
+                        <Line {...config} autoFit={true} animate={true} />
+                    </Watermark>
+            }
+
+
 
 
 
 
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                <Button type='primary' size='large' icon={<Pen size={16} />} style={{ lineHeight: 1 }} onClick={() => setIsModalOpen(true)}>Change fields</Button>
-                <Button size='large' icon={<Settings size={16} />} style={{ lineHeight: 1 }}>Chart settings</Button>
+                <Button type='primary' size='large' icon={<Pen size={16} />} style={{ lineHeight: 1 }} onClick={() => setIsModalOpen(true)}>
+                    Change fields
+                </Button>
+                <Button size='large' icon={<Settings size={16} />} style={{ lineHeight: 1 }} onClick={() => setDrawerOpen(true)}>
+                    Chart settings
+                </Button>
             </div>
         </div>
 
