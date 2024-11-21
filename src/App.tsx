@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Layout, theme, Typography } from 'antd';
 import { SiderBar } from './components/sider-bar';
 import { AppHeader } from './components/header';
 import { ImportingData } from './components/importingData';
 import { ChangeData } from './components/changeData';
 import { AllCharts } from './components/allCharts';
-import { LayoutGraph } from './components/layout';
+import { DontWork } from './components/dontWork';
+import { isMobile } from 'react-device-detect';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -37,43 +38,26 @@ const App: React.FC = () => {
       case 3:
         return <ImportingData />;
       case 4:
-        return <div>Content 4</div>;
+        return <DontWork />;
       case 5:
-        return <div>Content 5</div>;
+        return <DontWork />;
       default:
-        return <div>Default Content</div>;
+        return <DontWork />;
     }
   };
 
-  return (
-    <Layout style={{ minHeight: '100svh' }}>
-      <Sider collapsible collapsed={collapsed} width={240} onCollapse={(value) => setCollapsed(value)}>
-        <SiderBar collapsed={collapsed} contentIndex={contentIndex} changeContentIndex={setContentIndex} />
-      </Sider>
-      <Layout>
-        <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px' }}>
-          <AppHeader />
-        </Header>
-        <Content style={{ padding: '16px' }}>
-          {/* {contentIndex === 1 ? <LayoutGraph>
-            <div
-              style={{
-                // minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
-              {renderContent()}
-            </div>
-          </LayoutGraph> : <div
-            style={{
-              // minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            {renderContent()}
-          </div>} */}
+  return (<>
+    {isMobile ? <DontWork /> :
+      <Layout style={{ minHeight: '100svh' }}>
+        <Sider collapsible collapsed={collapsed} width={240} onCollapse={(value) => setCollapsed(value)}>
+          <SiderBar collapsed={collapsed} contentIndex={contentIndex} changeContentIndex={setContentIndex} />
+        </Sider>
+        <Layout>
+          <Header style={{ background: colorBgContainer, display: "flex", alignItems: 'center', justifyContent: 'flex-end', padding: '0 16px' }}>
+            <AppHeader />
+          </Header>
+          <Content style={{ padding: '16px' }}>
+            {/* {contentIndex === 1 ? <LayoutGraph>
           <div
             style={{
               // minHeight: 360,
@@ -83,12 +67,32 @@ const App: React.FC = () => {
           >
             {renderContent()}
           </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          <Typography.Title level={4} style={{ color: '#4f4f4f' }}>WBM ©{new Date().getFullYear()} </Typography.Title>
-        </Footer>
-      </Layout>
-    </Layout>
+        </LayoutGraph> : <div
+          style={{
+            // minHeight: 360,
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          {renderContent()}
+        </div>} */}
+            <div
+              style={{
+                // minHeight: 360,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {renderContent()}
+            </div>
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>
+            <Typography.Title level={4} style={{ color: '#4f4f4f' }}>WBM ©{new Date().getFullYear()} </Typography.Title>
+          </Footer>
+        </Layout>
+      </Layout>}
+  </>
+
   );
 };
 

@@ -1,5 +1,4 @@
-import { Card, Watermark } from "antd"
-import { Data } from "../../../App"
+import { Card } from "antd"
 import { BasicLine } from "../../../graph/basicLine"
 import classes from './classes.module.css'
 import Meta from "antd/es/card/Meta"

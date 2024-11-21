@@ -6,12 +6,9 @@ import * as XLSX from 'xlsx';
 import { Data } from '../../../App';
 import { dataStore } from '../../../store/dataStore';
 
-type Props = {
-    onImport: (data: Data[] | ((prevData: Data[]) => Data[])) => void;
-}
 
 
-const ImportingData = ({ onImport }: Props) => {
+const ImportingData = () => {
 
 
     const [api, contextHolder] = notification.useNotification();
@@ -94,12 +91,7 @@ const ImportingData = ({ onImport }: Props) => {
     };
 
 
-    const saveData = (data: Array<unknown>, fileName: string) => {
-        const importedData: Data = { fileName, data };
-        onImport((prevData: Data[]) => [...prevData, importedData]);
-        setData(importedData)
-        message.success('Data imported and saved locally!');
-    };
+ 
 
 
     const props: UploadProps = {

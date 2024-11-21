@@ -68,6 +68,17 @@ const ChangeData = ({ switchToImportData }: Props) => {
             title: 'Size',
             dataIndex: 'size',
             key: 'size',
+            render: (_, { size }) => {
+                return size > 10000 ? (
+                    <>
+                        {size}
+                        <Tag color="warning" style={{ marginLeft: 5 }}>Warning: read about</Tag>
+                    </>
+                ) : (
+                    size
+                );
+            },
+
         },
         {
             title: 'Type',
@@ -99,15 +110,16 @@ const ChangeData = ({ switchToImportData }: Props) => {
 
     if (data.length === 0) {
         return (
-            <div style={{ width: '100%',  minHeight: '80svh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ width: '100%', minHeight: '80svh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1rem' }}>
                 <Empty />
-                <Button onClick={() => switchToImportData(3)} type='primary'>Importing data</Button>
+                <Button onClick={() => switchToImportData(3)} type='primary'>
+                    Importing data</Button>
             </div>
         );
     }
 
     return (
-        <div style={{ width: '100%',minHeight: '80svh', padding: 16 }}>
+        <div style={{ width: '100%', minHeight: '80svh', padding: 16 }}>
             <Typography.Title level={5} style={{ margin: 0 }}>
                 Select the elements that will participate in the analysis
             </Typography.Title>

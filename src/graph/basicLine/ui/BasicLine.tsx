@@ -70,8 +70,8 @@ const BasicLine = () => {
     const [categoryColor, setCategoryColor] = useState<string | undefined>(undefined)
 
     const [dotSize, setDotSize] = useState<number>(1)
-
-
+    const [lineSize, setLineSize] = useState<number>(1)
+    const [pointers, setPointers] = useState<'square' | 'circle'>('square')
 
 
     const dataForChart = (selectedData.length > 0 && xField !== '' && yField !== '') ? selectedData : [
@@ -92,7 +92,7 @@ const BasicLine = () => {
         yField: yField || 'value',
 
         point: {
-            shapeField: 'point',
+            shapeField: pointers,
             sizeField: dotSize,
         },
         interaction: {
@@ -101,8 +101,7 @@ const BasicLine = () => {
             },
         },
         style: {
-            lineWidth: 2,
-            gradient: 'x',
+            lineWidth: lineSize,
         },
         slider: slider && {
             x: { labelFormatter: (d: unknown) => d },
@@ -111,6 +110,7 @@ const BasicLine = () => {
         colorField: categoryColor !== '' ? categoryColor : false,
         // seriesField: 'division',
     };
+    console.log(lineSize);
 
     return (
         <div style={{ width: '100%', height: 'calc(100% - 1rem)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -138,6 +138,13 @@ const BasicLine = () => {
 
                 dotSize={dotSize}
                 setDotSize={setDotSize}
+
+                lineSize={lineSize}
+                setLineSize={setLineSize}
+
+                pointers={pointers}
+                setPointers={setPointers}
+
 
             />
 

@@ -1,5 +1,5 @@
-import { Button, Checkbox, Drawer, InputNumber, Select } from "antd"
-import { Eye, EyeOff } from "lucide-react"
+import { Button, Drawer, InputNumber, Popover, Radio, Space, Typography } from "antd"
+import { CircleHelp, Eye, EyeOff } from "lucide-react"
 import { useEffect } from "react"
 
 
@@ -18,14 +18,31 @@ type Props = {
     setDotSize: (dotSize: number) => void
     dotSize: number
 
+    lineSize: number
+    setLineSize: (lineSize: number) => void
+
+
+    pointers: "square" | "circle"
+    setPointers: (pointers: "square" | "circle") => void
 }
 
-export const LineDataViewDrawer = ({ drawerOpen, setDrawerOpen, slider, setSlider, more1Line, setCategoryColor, setDotSize, dotSize}: Props) => {
+export const LineDataViewDrawer = ({ drawerOpen, setDrawerOpen, slider, setSlider, more1Line, setCategoryColor, setDotSize, dotSize, lineSize, setLineSize, pointers, setPointers }: Props) => {
     useEffect(() => {
-        if (!more1Line){
+        if (!more1Line) {
             setCategoryColor(undefined)
         }
     }, [more1Line, setCategoryColor])
+
+    const content = () => {
+        return <Space direction="vertical">
+            <Typography.Text>
+                Scaling may not work on an approximate graph.
+            </Typography.Text>
+            <Typography.Text>
+                If it doesn't work, refresh the page, select the width and then select the data.
+            </Typography.Text>
+        </Space>
+    }
     return (
         <Drawer title="Change view" open={drawerOpen} onClose={() => setDrawerOpen(false)} >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -54,7 +71,29 @@ export const LineDataViewDrawer = ({ drawerOpen, setDrawerOpen, slider, setSlide
                             }))
                         } /> }
                 </div> */}
-                <InputNumber placeholder="Set dot size" max={10} min={1} defaultValue={1} onChange={(e) => setDotSize(e!)} value={dotSize}/>
+                <div>
+                    <Radio.Group onChange={(e) => setPointers(e.target.value)} value={pointers}>
+                        <Radio value={'square'}>Square</Radio>
+                        <Radio value={'circle'}>Circle</Radio>
+                    </Radio.Group>
+                </div>
+
+
+                <div>
+                    <Typography.Title level={5} style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '.5rem', lineHeight: 1 }}>
+                        Dot size
+                        <Popover content={content}><CircleHelp size={16} color="#4f4f4f" /></Popover>
+                    </Typography.Title>
+                    <InputNumber placeholder="Set dot size" max={10} min={1} defaultValue={1} onChange={(e) => setDotSize(e!)} value={dotSize} />
+                </div>
+
+                <div>
+                    <Typography.Title level={5} style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '.5rem', lineHeight: 1 }}>
+                        Line width
+                        <Popover content={content}><CircleHelp size={16} color="#4f4f4f" /></Popover>
+                    </Typography.Title>
+                    <InputNumber placeholder="Set line size" max={10} min={1} defaultValue={1} onChange={(e) => setLineSize(e!)} value={lineSize} />
+                </div>
                 
             </div>
 

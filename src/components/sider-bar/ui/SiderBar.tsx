@@ -1,5 +1,5 @@
 import { Typography, Menu, MenuProps } from "antd"
-import { ChartScatter, ReplaceAll, FolderDown, FolderUp, User } from "lucide-react";
+import { ChartScatter, ReplaceAll, FolderDown, User, Info } from "lucide-react";
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -22,8 +22,8 @@ const items: MenuItem[] = [
   getItem('Data preview', '1', <ChartScatter size={20} />),
   getItem('Changing the data', '2', <ReplaceAll size={20} />),
   getItem('Importing data', '3', <FolderDown size={20} />),
-  getItem('Exporting data', '4', <FolderUp size={20} />),
-  getItem('User', '5', <User size={20} />),
+  getItem('User', '4', <User size={20} />),
+  getItem('About', '5', <Info  size={20} />),
 ];
 
 interface Props {
